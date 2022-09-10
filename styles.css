@@ -1,0 +1,94 @@
+body {
+  margin: 80px;
+  padding: 0;
+  font-family: "poppins";
+  max-width: 1440px;
+  height: 100vh;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  gap: 50px;
+  padding: 10px 50px;
+  background-color: #cfcbed63;
+  border-radius: 100px;
+}
+
+.logo {
+  height: 80px;
+}
+
+li {
+  font-size: 25px;
+}
+a {
+  text-decoration: none;
+  font-weight: 600;
+  color: #8400ff;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 100px;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  margin: 0;
+  opacity: 0.7;
+}
+h2 {
+  opacity: 0.5;
+  font-size: 30px;
+}
+h1 {
+  margin: 0;
+  font-size: 100px;
+  color: #8400ff;
+}
+
+.svg {
+  height: 20px;
+}
+.links {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 5px 20px;
+  border-radius: 100px;
+  background-color: #8400ff;
+  color: #fff;
+  margin: 20px 0;
+}
+.image {
+  height: 600px;
+  width: 100%;
+}
+.circle {
+  width: 600px;
+  height: 600px;
+  background-color: #8074ef50;
+  border-radius: 100%;
+  position: absolute;
+  top: 300px;
+  right: -100px;
+}
