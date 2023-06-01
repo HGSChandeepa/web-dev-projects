@@ -1,50 +1,55 @@
-const puppeteer = require("puppeteer");
-const fs = require("fs");
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
 
-async function run() {
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Route
+app.get("/convert", async (req, res) => {
+  const { date, sourceCurrency, targetCurrency, amountInSourceCurrency } =
+    req.query;
+
+  const url = `https://openexchangerates.org/api/historical/${date}.json?app_id=5c1ca022aae046d39992f94bd487b4d6`;
+
   try {
-    //open the browser
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto("https://www.traversymedia.com/");
+    const response = await axios.get(url);
+    const data = response.data;
 
-    //?CREATE THE IMAGES OR PDF
+    // Check the data is valid
+    if (!data || response.status !== 200) {
+      throw new Error("Unable to fetch exchange rates");
+    }
 
-    //   await page.screenshot({ path: "example.png", fullPage: true });
-    //   await page.pdf({ path: "example.pdf", format: "A4" });
+    const rates = data.rates;
 
-    //?TO GET ALL THE HTML
-    //   const html = await page.content();
+    // Check if the entered sourceCurrency and targetCurrency are available
+    if (
+      !rates.hasOwnProperty(sourceCurrency) ||
+      !rates.hasOwnProperty(targetCurrency)
+    ) {
+      throw new Error(
+        "The entered sourceCurrency and targetCurrency are not available"
+      );
+    }
 
-    //? get the title
-    //   const title = await page.evaluate(() => document.title);
+    // Perform the conversion
+    const sourceRate = rates[sourceCurrency];
+    const targetRate = rates[targetCurrency];
 
-    //?get all the text
-    //   const text = await page.evaluate(() => document.body.innerText);
+    const targetValue = (targetRate / sourceRate) * amountInSourceCurrency;
 
-    //?get all the links
-    //   const links = await page.evaluate(() =>
-    //     Array.from(document.querySelectorAll("a"), (e) => e.href)
-    //   );
-
-    //?get all the courses
-    const courses = await page.evaluate(() =>
-      Array.from(document.querySelectorAll("#cscourses .card"), (e) => ({
-        level: e.querySelector(".card-body .level").innerHTML,
-        title: e.querySelector(".card-body h3").innerHTML,
-        link: e.querySelector(".card-footer a").href,
-      }))
-    );
-
-    //?add the data to a json file
-
-    // await fs.promises.writeFile("text.json", JSON.stringify(courses));
-    console.log(courses);
-
-    await browser.close();
+    return res.json({ amountInTargetCurrency: targetValue });
   } catch (err) {
-    console.error("An error occurred:", error);
+    console.error(err);
+    res.status(500).json({ error: "An error occurred" });
   }
-}
+});
 
-run();
+// Port
+app.listen(5000, () => {
+  console.log("Server started on port 5000");
+});
